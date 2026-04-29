@@ -25,7 +25,7 @@ class CompraMaterial extends Model
      */
     public function detalles(): HasMany
     {
-        return $this->hasMany(DetalleCompraMaterial::class, 'compra_materials_id');
+        return $this->hasMany(DetalleCompraMaterial::class, 'compra_materiales_id');
     }
 
     /**
@@ -33,6 +33,6 @@ class CompraMaterial extends Model
      */
     public function egreso(): HasOne
     {
-        return $this->hasOne(IngresoEgreso::class, 'compra_materials_id');
+        return $this->hasOne(IngresoEgreso::class, 'compra_materiales_id');
     }
 }

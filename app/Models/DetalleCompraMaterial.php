@@ -14,8 +14,8 @@ class DetalleCompraMaterial extends Model
         'subtotal',
         'cantidad',
         'precio_unitario',
-        'materials_id',
-        'compra_materials_id',
+        'materiales_id',
+        'compra_materiales_id',
     ];
 
     /**
@@ -23,7 +23,7 @@ class DetalleCompraMaterial extends Model
      */
     public function compra(): BelongsTo
     {
-        return $this->belongsTo(CompraMaterial::class, 'compra_materials_id');
+        return $this->belongsTo(CompraMaterial::class, 'compra_materiales_id');
     }
 
     /**
@@ -31,6 +31,6 @@ class DetalleCompraMaterial extends Model
      */
     public function material(): BelongsTo
     {
-        return $this->belongsTo(Material::class, 'materials_id');
+        return $this->belongsTo(Material::class, 'materiales_id');
     }
 }

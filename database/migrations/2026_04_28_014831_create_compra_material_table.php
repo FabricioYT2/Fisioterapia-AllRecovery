@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('compra_materials', function (Blueprint $table) {
+        Schema::create('compra_materiales', function (Blueprint $table) {
             $table->id();
             $table->decimal('costo_total');
             $table->date('fecha_compra');
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('compra_materials');
+        Schema::dropIfExists('compra_materiales');
     }
 };

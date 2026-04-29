@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('fecha');
             $table->string('descripcion');
             $table->foreignId('cobros_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('compra_materials_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('compra_materiales_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

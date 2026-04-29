@@ -16,7 +16,7 @@ class IngresoEgreso extends Model
         'fecha',
         'descripcion',
         'cobros_id',
-        'compra_materials_id',
+        'compra_materiales_id',
     ];
 
     protected $casts = [
@@ -36,6 +36,6 @@ class IngresoEgreso extends Model
      */
     public function compraMaterial(): BelongsTo
     {
-        return $this->belongsTo(CompraMaterial::class, 'compra_materials_id');
+        return $this->belongsTo(CompraMaterial::class, 'compra_materiales_id');
     }
 }

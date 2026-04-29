@@ -22,7 +22,7 @@ class Material extends Model
      */
     public function detallesCompra(): HasMany
     {
-        return $this->hasMany(DetalleCompraMaterial::class, 'materials_id');
+        return $this->hasMany(DetalleCompraMaterial::class, 'materiales_id');
     }
 
     /**
@@ -30,6 +30,6 @@ class Material extends Model
      */
     public function historialesUso(): HasMany
     {
-        return $this->hasMany(HistorialMaterial::class, 'materials_id');
+        return $this->hasMany(HistorialMaterial::class, 'materiales_id');
     }
 }

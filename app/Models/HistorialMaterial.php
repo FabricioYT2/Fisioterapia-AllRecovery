@@ -12,7 +12,7 @@ class HistorialMaterial extends Model
 
     protected $fillable = [
         'historial_clinicos_id',
-        'materials_id',
+        'materiales_id',
         'cantidad_usada',
     ];
 
@@ -29,6 +29,6 @@ class HistorialMaterial extends Model
      */
     public function material(): BelongsTo
     {
-        return $this->belongsTo(Material::class, 'materials_id');
+        return $this->belongsTo(Material::class, 'materiales_id');
     }
 }
