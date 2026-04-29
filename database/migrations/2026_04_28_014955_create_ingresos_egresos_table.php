@@ -17,8 +17,8 @@ return new class extends Migration
             $table->decimal('monto');
             $table->date('fecha');
             $table->string('descripcion');
-            $table->foreignId('cobros_id')->constrained()->onDelete('cascade');
-            $table->foreignId('compra_materials_id')->constrained()->onDelete('cascade');
+            $table->foreignId('cobros_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('compra_materials_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

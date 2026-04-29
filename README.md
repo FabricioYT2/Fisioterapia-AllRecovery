@@ -2,3 +2,6 @@
 
 - Migraciones
 
+## Juan Villegas Garcia 29/04/2026
+
+- Models
