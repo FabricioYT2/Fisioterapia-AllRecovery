@@ -14,13 +14,6 @@ export default defineConfig({
         minify: 'esbuild',
         target: 'esnext',
         cssMinify: true,
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vendor: ['alpinejs'],
-                },
-            },
-        },
     },
     server: {
         host: '127.0.0.1',

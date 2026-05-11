@@ -16,6 +16,7 @@ use App\Observers\HistorialMaterialObserver;
 use App\Models\DetalleCompraMaterial;
 use App\Observers\DetalleCompraMaterialObserver;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void

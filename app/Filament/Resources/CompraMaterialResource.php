@@ -194,9 +194,9 @@ class CompraMaterialResource extends Resource
         ];
     }
 
-    public static function getLabel(): ?string { return 'Compra de Material'; }
-    public static function getPluralLabel(): ?string { return 'Compras de Materiales'; }
-    public static function getNavigationLabel(): string { return 'Compras'; }
+    public static function getLabel(): ?string { return 'Nueva Adquisición'; }
+    public static function getPluralLabel(): ?string { return 'Reabastecimiento de Inventario'; }
+    public static function getNavigationLabel(): string { return 'Reabastecimiento'; }
     public static function procesarCompra(CompraMaterial $compra): void
 {
     $compra->load('detalleCompraMateriales');

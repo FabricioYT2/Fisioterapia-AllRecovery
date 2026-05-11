@@ -17,6 +17,7 @@ use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class CitaResource extends Resource
 {
@@ -96,7 +97,6 @@ class CitaResource extends Resource
     {
         return $table
             ->columns([
-                // ✅ Optimizado: Filament usará el 'with' definido abajo
                 Tables\Columns\TextColumn::make('paciente.nombre')
                     ->label('Paciente')
                     ->searchable()
@@ -186,7 +186,6 @@ class CitaResource extends Resource
                         $desde = request('desde') ?? now()->startOfMonth();
                         $hasta = request('hasta') ?? now()->endOfMonth();
                         $estado = request('estado') ?? 'todos';
-                        
                         $query = Cita::with('paciente');
                         if ($estado !== 'todos') {
                             $query->where('estado', $estado);
@@ -200,13 +199,32 @@ class CitaResource extends Resource
                             'realizado' => Cita::where('estado', 'realizado')->whereBetween('fecha_hora', [$desde, $hasta])->count(),
                             'cancelado' => Cita::where('estado', 'cancelado')->whereBetween('fecha_hora', [$desde, $hasta])->count(),
                         ];
-                        
+
+                        $ingresos = \App\Models\IngresoEgreso::where('tipo', 'ingreso')
+                            ->whereBetween('fecha', [$desde, $hasta])
+                            ->orderBy('fecha')
+                            ->get();
+
+                        $egresos = \App\Models\IngresoEgreso::where('tipo', 'egreso')
+                            ->whereBetween('fecha', [$desde, $hasta])
+                            ->orderBy('fecha')
+                            ->get();
+
+                        $total_ingresos = $ingresos->sum('monto');
+                        $total_egresos = $egresos->sum('monto');
+                        $balance = $total_ingresos - $total_egresos;
+
                         $pdf = Pdf::loadView('reports.pdf.citas', [
                             'citas' => $citas,
                             'estadisticas' => $estadisticas,
                             'titulo' => 'Reporte de Citas',
                             'fecha_generacion' => now()->format('d/m/Y H:i'),
-                            'periodo' => 'Del ' . \Carbon\Carbon::parse($desde)->format('d/m/Y') . ' al ' . \Carbon\Carbon::parse($hasta)->format('d/m/Y'),
+                            'periodo' => 'Del ' . Carbon::parse($desde)->format('d/m/Y') . ' al ' . Carbon::parse($hasta)->format('d/m/Y'),
+                            'ingresos' => $ingresos,
+                            'egresos' => $egresos,
+                            'total_ingresos' => $total_ingresos,
+                            'total_egresos' => $total_egresos,
+                            'balance' => $balance,
                         ])->setPaper('a4');
                         
                         return response()->streamDownload(
@@ -236,8 +254,8 @@ class CitaResource extends Resource
                 ]),
             ])
             ->defaultSort('fecha_hora', 'desc')
-            ->defaultPaginationPageOption(15) // ✅ Paginación optimizada
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['paciente'])); // ✅ EVITA N+1 QUERIES
+            ->defaultPaginationPageOption(15) 
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['paciente'])); 
     }
 
     public static function infolist(Infolist $infolist): Infolist

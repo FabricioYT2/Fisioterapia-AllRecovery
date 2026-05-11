@@ -16,6 +16,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Illuminate\Support\HtmlString;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -58,6 +60,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([Authenticate::class])
             ->spa()
-            ;
+            ->plugins([
+                FilamentShieldPlugin::make(),
+            ])
+            ->renderHook(
+                'panels::head.start',
+                fn (): HtmlString => new HtmlString(view('filament.shield-script')->render())
+            );
     }
 }

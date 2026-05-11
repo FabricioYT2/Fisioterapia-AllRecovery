@@ -18,7 +18,6 @@
 </head>
 <body class="bg-gradient-to-br from-[#f5f3ff] to-white min-h-screen">
     
-    <!-- Navbar -->
     <nav class="bg-white shadow-sm p-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <h1 class="font-logo text-2xl font-bold text-[#6a1b9a]">Isa Villegas</h1>
@@ -28,7 +27,6 @@
         </div>
     </nav>
 
-    <!-- Contenido principal -->
     <div class="max-w-2xl mx-auto px-6 py-16">
         <div class="text-center mb-12">
             <h2 class="font-logo text-4xl font-bold text-[#6a1b9a] mb-4">

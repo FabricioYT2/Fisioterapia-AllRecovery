@@ -98,15 +98,15 @@
                                                 {{ $recomendacion->ejercicio->nombre_ejercicio }}
                                             </h5>
                                             @if($recomendacion->ejercicio->video_url)
-                                                <a href="{{ $recomendacion->ejercicio->video_url }}" 
-                                                   target="_blank"
-                                                   class="text-[#00acc1] hover:text-[#6a1b9a] transition-colors p-2 rounded-full hover:bg-[#00acc1]/10"
-                                                   title="Ver video demostrativo">
+                                                <button 
+                                                    onclick="abrirVideoModal('{{ $recomendacion->ejercicio->video_url }}', '{{ addslashes($recomendacion->ejercicio->nombre_ejercicio) }}')"
+                                                    class="text-[#00acc1] hover:text-[#6a1b9a] transition-colors p-2 rounded-full hover:bg-[#00acc1]/10 cursor-pointer"
+                                                    title="Ver video demostrativo">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                </a>
+                                                </button>
                                             @endif
                                         </div>
                                         
@@ -143,17 +143,7 @@
                                     </div>
                                 @endforeach
                             </div>
-                            
-                            <div class="mt-4 p-3 bg-[#fff3e0] border border-[#ffb74d] rounded-xl">
-                                <p class="text-xs text-[#e65100] flex items-start gap-2">
-                                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <span>
-                                        <strong>Importante:</strong> Realiza estos ejercicios bajo supervisión profesional. Si sientes dolor intenso, detente y consulta con tu fisioterapeuta.
-                                    </span>
-                                </p>
-                            </div>
+                        
                         </div>
                     @endif
 
@@ -233,15 +223,15 @@
                                             {{ $recomendacion->ejercicio->nombre_ejercicio }}
                                         </h4>
                                         @if($recomendacion->ejercicio->video_url)
-                                            <a href="{{ $recomendacion->ejercicio->video_url }}" 
-                                               target="_blank"
-                                               class="text-[#00acc1] hover:text-[#6a1b9a] transition-colors"
-                                               title="Ver video">
+                                            <button 
+                                                onclick="abrirVideoModal('{{ $recomendacion->ejercicio->video_url }}', '{{ addslashes($recomendacion->ejercicio->nombre_ejercicio) }}')"
+                                                class="text-[#00acc1] hover:text-[#6a1b9a] transition-colors cursor-pointer"
+                                                title="Ver video">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                            </a>
+                                            </button>
                                         @endif
                                     </div>
                                     
@@ -299,6 +289,68 @@
             </div>
         @endif
     </div>
+
+    <div id="videoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: white; border-radius: 16px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <button 
+                onclick="cerrarVideoModal()" 
+                style="position: absolute; top: 15px; right: 20px; background: rgba(0,0,0,0.7); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: white; font-size: 24px; line-height: 1; z-index: 10;"
+                title="Cerrar video"
+            >×</button>
+            
+            <div style="padding: 20px;">
+                <h3 id="videoTitulo" style="margin: 0 0 20px 0; color: #6a1b9a; font-size: 20px; font-weight: 700;"></h3>
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background: #000;">
+                    <iframe id="videoIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function convertirUrlYouTube(url) {
+            if (!url) return '';
+            if (url.includes('youtube.com/watch')) {
+                const match = url.match(/v=([^&]+)/);
+                if (match) return 'https://www.youtube.com/embed/' + match[1];
+            }
+            if (url.includes('youtu.be/')) {
+                const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+                if (match) return 'https://www.youtube.com/embed/' + match[1];
+            }
+            if (url.includes('youtube.com/embed/')) return url;
+            if (url.includes('player.vimeo.com')) return url;
+            return url;
+        }
+
+        function abrirVideoModal(url, titulo) {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoIframe');
+            const tituloEl = document.getElementById('videoTitulo');
+            
+            iframe.src = convertirUrlYouTube(url);
+            tituloEl.textContent = titulo;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoIframe');
+            
+            modal.style.display = 'none';
+            iframe.src = '';
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) cerrarVideoModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarVideoModal();
+        });
+    </script>
 
 </body>
 </html>
