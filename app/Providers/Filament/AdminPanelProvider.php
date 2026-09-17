@@ -66,6 +66,34 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::head.start',
                 fn (): HtmlString => new HtmlString(view('filament.shield-script')->render())
+            )
+            ->renderHook(
+                'panels::body.end',
+                fn (): HtmlString => new HtmlString("
+                    <script>
+                        (function() {
+                            let idleTimer;
+                            const IDLE_TIME = 5 * 60 * 1000; // 5 minutos
+
+                            function resetIdleTimer() {
+                                clearTimeout(idleTimer);
+                                idleTimer = setTimeout(() => {
+                                    const hasOpenModal = document.querySelector('.fi-modal-open, [aria-modal=\"true\"], .fi-dropdown-open');
+                                    const isFormActive = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+                                    
+                                    if (!hasOpenModal && !isFormActive) {
+                                        location.reload();
+                                    }
+                                }, IDLE_TIME);
+                            }
+
+                            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart', 'mousedown', 'focus']
+                                .forEach(evt => document.addEventListener(evt, resetIdleTimer, { passive: true }));
+
+                            resetIdleTimer();
+                        })();
+                    </script>
+                ")
             );
     }
 }
